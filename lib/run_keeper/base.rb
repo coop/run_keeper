@@ -26,7 +26,7 @@ module RunKeeper
 
     def profile
       response = request 'profile'
-      RunKeeper::Profile.new response.parsed.merge(:username => user.username, :userid => user.userid)
+      RunKeeper::Profile.new response.parsed.merge(:userid => user.userid)
     end
 
     def user

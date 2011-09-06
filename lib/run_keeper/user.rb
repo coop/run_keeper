@@ -8,9 +8,5 @@ module RunKeeper
       end
     end
     alias :userid :userID
-
-    def username
-      profile.split('/').last
-    end
   end
 end
