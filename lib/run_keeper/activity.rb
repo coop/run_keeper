@@ -9,6 +9,10 @@ module RunKeeper
       end
     end
 
+    def id
+      uri.split('/').last.to_i
+    end
+
     def start_time= value
       @start_time = Time.zone.parse value
     end
