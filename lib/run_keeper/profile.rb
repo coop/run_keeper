@@ -5,7 +5,7 @@ module RunKeeper
 
     def initialize attributes = {}
       attributes.each do |attribute, value|
-        send :"#{attribute}=", value
+        send :"#{attribute}=", value if respond_to? :"#{attribute}="
       end
       self.username = profile
     end
@@ -15,7 +15,7 @@ module RunKeeper
     end
 
     def username= profile
-      @username = profile.split('/').last
+      @username = profile.split('/').last if profile
     end
   end
 end
