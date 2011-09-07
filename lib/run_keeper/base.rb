@@ -6,43 +6,43 @@ module RunKeeper
       'user'               => 'application/vnd.com.runkeeper.User+json'
     }
 
-    attr_reader :token
-
-    def initialize client_id, client_secret, token
-      @client_id, @client_secret, @token = client_id, client_secret, token
-      user
+    def initialize client_id, client_secret
+      @client_id, @client_secret = client_id, client_secret
     end
 
-    def request endpoint
-      response = access_token.get user.send(endpoint), :headers => {'Accept' => HEADERS[endpoint]}, :parse => :json
-    end
+    def fitness_activities token, options = {}
+      start, finish = options[:start], options[:finish].presence || Time.zone.now if options[:start].present?
+      limit         = options[:limit].presence || 25
 
-    def fitness_activities
-      response = request 'fitness_activities'
+      response = request token, 'fitness_activities'
       response.parsed['items'].inject([]) do |activities, activity|
-        activities << RunKeeper::Activity.new(activity)
+        activities << Activity.new(activity)
       end
     end
 
-    def profile
-      response = request 'profile'
+    def profile token
+      response = request token, 'profile'
       RunKeeper::Profile.new response.parsed.merge(:userid => user.userid)
     end
 
-    def user
+    def user token
       @user ||= begin
-        response = access_token.get '/user', :headers => {'Accept' => HEADERS['user']}, :parse => :json
+        response = access_token(token).get '/user', :headers => {'Accept' => HEADERS['user']}, :parse => :json
         User.new response.parsed
       end
     end
 
   private
-    def access_token
+    def access_token token
       OAuth2::AccessToken.new client, token
     end
 
     def client
       OAuth2::Client.new @client_id, @client_secret, :site => 'https://api.runkeeper.com', :authorize_url => '/apps/authorize', :token_url => '/apps/token', :raise_errors => false
+    end
+
+    def request token, endpoint
+      response = access_token(token).get user(token).send(endpoint), :headers => {'Accept' => HEADERS[endpoint]}, :parse => :json
     end
   end
 end
