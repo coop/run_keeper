@@ -10,7 +10,7 @@ module RunKeeper
     end
 
     def id
-      uri.split('/').last.to_i
+      uri.split('/').last.to_i if uri
     end
 
     def start_time= value
