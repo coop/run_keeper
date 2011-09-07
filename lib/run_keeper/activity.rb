@@ -5,7 +5,7 @@ module RunKeeper
 
     def initialize attributes = {}
       attributes.each do |attribute, value|
-        send :"#{attribute}=", value
+        send :"#{attribute}=", value if respond_to? :"#{attribute}="
       end
     end
 
