@@ -13,7 +13,7 @@ class ActivityTest < MiniTest::Unit::TestCase
     assert_instance_of Fixnum, Activity.new('uri' => '/profile/12345').id
   end
 
-  def test_id_returns_uri_id
+  def test_id_returns_id_from_uri
     assert_equal 12345, Activity.new('uri' => '/profile/12345').id
   end
 
