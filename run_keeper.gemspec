@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  s.add_development_dependency 'rake', '~> 0.9.2'
   s.add_dependency 'activesupport', '~> 3.1.0'
   s.add_dependency 'oauth2', '~> 0.5.0'
 end
