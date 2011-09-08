@@ -12,4 +12,6 @@ module RunKeeper
   def self.new client_id, client_secret
     Base.new client_id, client_secret
   end
+
+  class Error < OAuth2::Error; end
 end

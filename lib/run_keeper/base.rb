@@ -14,35 +14,37 @@ module RunKeeper
       start, finish = options[:start], options[:finish].presence || Time.zone.now if options[:start].present?
       limit         = options[:limit].presence || 25
 
-      response = request token, 'fitness_activities'
-      response.parsed['items'].inject([]) do |activities, activity|
+      request(token, 'fitness_activities').parsed['items'].inject([]) do |activities, activity|
         activities << Activity.new(activity)
       end
     end
 
     def profile token
-      response = request token, 'profile'
-      RunKeeper::Profile.new response.parsed.merge(:userid => user.userid)
+      Profile.new request(token, 'profile').parsed.merge(:userid => @user.userid)
+    end
+
+    def request token, endpoint
+      parse_response access_token(token).get(user(token).send(endpoint), :headers => {'Accept' => HEADERS[endpoint]}, :parse => :json)
     end
 
     def user token
       @user ||= begin
-        response = access_token(token).get '/user', :headers => {'Accept' => HEADERS['user']}, :parse => :json
-        User.new response.parsed
+        User.new access_token(token).get('/user', :headers => {'Accept' => HEADERS['user']}, :parse => :json).parsed
       end
     end
 
   private
     def access_token token
+      client = OAuth2::Client.new @client_id, @client_secret, :site => 'https://api.runkeeper.com', :authorize_url => '/apps/authorize', :token_url => '/apps/token', :raise_errors => false
       OAuth2::AccessToken.new client, token
     end
 
-    def client
-      OAuth2::Client.new @client_id, @client_secret, :site => 'https://api.runkeeper.com', :authorize_url => '/apps/authorize', :token_url => '/apps/token', :raise_errors => false
-    end
-
-    def request token, endpoint
-      response = access_token(token).get user(token).send(endpoint), :headers => {'Accept' => HEADERS[endpoint]}, :parse => :json
+    def parse_response response
+      if [200, 304].include? response.status
+        response
+      else
+        raise Error.new(response)
+      end
     end
   end
 end
