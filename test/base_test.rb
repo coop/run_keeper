@@ -8,12 +8,12 @@ class BaseTest < MiniTest::Unit::TestCase
 
   def test_fitness_activities_with_a_valid_token_returns_an_array
     stub_successful_runkeeper_fitness_activities_request
-    assert_instance_of Array, runkeeper.fitness_activities('valid_token')
+    assert_instance_of Array, runkeeper.fitness_activities('valid_token', :limit => 1)
   end
 
   def test_fitness_activities_with_a_valid_token_returns_runkeeper_activities
     stub_successful_runkeeper_fitness_activities_request
-    runkeeper.fitness_activities('valid_token').each do |klass|
+    runkeeper.fitness_activities('valid_token', :limit => 1).each do |klass|
       assert_instance_of RunKeeper::Activity, klass
     end
   end
