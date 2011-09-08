@@ -26,9 +26,7 @@ module RunKeeper
     end
 
     def user token
-      @user ||= begin
-        User.new access_token(token).get('/user', :headers => {'Accept' => HEADERS['user']}, :parse => :json).parsed
-      end
+      @user ||= User.new access_token(token).get('/user', :headers => {'Accept' => HEADERS['user']}, :parse => :json).parsed
     end
 
   private
