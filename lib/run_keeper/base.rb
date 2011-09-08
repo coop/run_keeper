@@ -11,20 +11,21 @@ module RunKeeper
     end
 
     def fitness_activities token, options = {}
-      limit = options[:limit] || 25
+      options[:params] = {}
+      options[:limit]  = options[:limit] || 25
       if !options[:start].nil?
-        start  = Time.utc *options[:start].split('-')
-        finish = options[:finish].nil?? Time.now.utc : Time.utc(*options[:finish].split('-'))
+        options[:start]  = Time.utc *options[:start].split('-')
+        options[:finish] = options[:finish].nil?? Time.now.utc : Time.utc(*options[:finish].split('-'))
       end
 
-      request(token, 'fitness_activities').parsed['items'].inject([]) do |activities, activity|
+      request(token, 'fitness_activities', options[:params]).parsed['items'].inject([]) do |activities, activity|
         activity = Activity.new activity
         if !options[:start].nil?
-          if activity.start_time >= start && activity.start_time <= finish
-            activities << activity unless activities.size >= limit
+          if activity.start_time >= options[:start] && activity.start_time <= options[:finish]
+            activities << activity unless activities.size >= options[:limit]
           end
         else
-          activities << activity unless activities.size >= limit
+          activities << activity unless activities.size >= options[:limit]
         end
         activities
       end
@@ -34,8 +35,11 @@ module RunKeeper
       Profile.new request(token, 'profile').parsed.merge(:userid => @user.userid)
     end
 
-    def request token, endpoint
-      parse_response access_token(token).get(user(token).send(endpoint), :headers => {'Accept' => HEADERS[endpoint]}, :parse => :json)
+    def request token, endpoint, params = {}
+      response = access_token(token).get(user(token).send(endpoint), :headers => {'Accept' => HEADERS[endpoint]}, :parse => :json) do |request|
+        request.params = params
+      end
+      parse_response response
     end
 
     def user token

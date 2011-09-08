@@ -36,6 +36,18 @@ class BaseTest < MiniTest::Unit::TestCase
     assert_equal 1, activities.size
   end
 
+  def test_fitness_activities_over_2_requests_by_date_range
+    stub_successful_runkeeper_fitness_activities_request
+    stub_successful_runkeeper_fitness_activities_page_2_request
+    assert_equal 4, runkeeper.fitness_activities('valid_token', :start => '2011-08-21', :finish => '2011-09-02').size
+  end
+
+  def test_fitness_activities_over_2_requests_by_date_range_and_limit
+    stub_successful_runkeeper_fitness_activities_request
+    stub_successful_runkeeper_fitness_activities_page_2_request
+    assert_equal 3, runkeeper.fitness_activities('valid_token', :start => '2011-08-21', :finish => '2011-09-02', :limit => 3).size
+  end
+
   def test_user_returns_an_instance_of_user
     stub_successful_runkeeper_user_request
     assert_instance_of RunKeeper::User, runkeeper.user('valid_token')
