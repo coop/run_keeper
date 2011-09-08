@@ -18,10 +18,6 @@ class ActivityTest < MiniTest::Unit::TestCase
   end
 
   def test_start_time_is_UTC
-    assert_equal '(GMT+00:00) UTC', Activity.new('start_time' => 'Thu, 1 Sep 2011 17:41:28').start_time.time_zone.to_s
-  end
-
-  def test_state_time_is_an_instance_of_time_with_zone
-    assert_instance_of ActiveSupport::TimeWithZone, Activity.new('start_time' => 'Thu, 1 Sep 2011 17:41:28').start_time
+    assert Activity.new('start_time' => 'Thu, 1 Sep 2011 17:41:28').start_time.utc?
   end
 end

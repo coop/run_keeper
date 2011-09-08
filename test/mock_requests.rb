@@ -1,7 +1,7 @@
 module MockRequests
   def stub_successful_runkeeper_fitness_activities_request
     stub_successful_runkeeper_user_request
-    stub_runkeeper_fitness_activities_request.to_return :status => 200, :body => {"size" => "1", "items" => [{"type" => "Running", "start_time" => "Thu, 1 Sep 2011 17:41:28", "total_distance" => "5492.22273600001", "duration" => "1743.946", "uri" => "/activities/40"}], "previous" => "https://api.runkeeper.com/user/1234567890/activities?page=2"}, :headers => {"content-type" => "application/vnd.com.runkeeper.FitnessActivityFeed+json;charset=ISO-8859-1"}
+    stub_runkeeper_fitness_activities_request.to_return :status => 200, :body => {"size" => "4", "items" => [{"type" => "Running", "start_time" => "Thu, 25 Aug 2011 17:41:28", "total_distance" => "5492.22273600001", "duration" => "1743.946", "uri" => "/activities/39"}, {"type" => "Running", "start_time" => "Thu, 1 Sep 2011 17:41:28", "total_distance" => "5492.22273600001", "duration" => "1743.946", "uri" => "/activities/40"}, {"type" => "Running", "start_time" => "Fri, 2 Sep 2011 17:41:28", "total_distance" => "5492.22273600001", "duration" => "2090.123", "uri" => "/activities/41"}, {"type" => "Running", "start_time" => "Sat, 10 Sep 2011 17:41:28", "total_distance" => "5492.22273600001", "duration" => "1743.946", "uri" => "/activities/42"}], "previous" => "https://api.runkeeper.com/user/1234567890/activities?page=2"}, :headers => {"content-type" => "application/vnd.com.runkeeper.FitnessActivityFeed+json;charset=ISO-8859-1"}
   end
 
   def stub_successful_runkeeper_profile_request

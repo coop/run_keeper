@@ -11,10 +11,23 @@ module RunKeeper
     end
 
     def fitness_activities token, options = {}
-      start, finish = options[:start], options[:finish].presence || Time.zone.now if options[:start].present?
-      limit         = options[:limit].presence || 25
+      limit = options[:limit] || 25
+      if !options[:start].nil?
+        start  = Time.utc *options[:start].split('-')
+        finish = options[:finish].nil?? Time.now.utc : Time.utc(*options[:finish].split('-'))
+      end
 
-      request(token, 'fitness_activities').parsed['items'].map { |activity| Activity.new(activity) }
+      request(token, 'fitness_activities').parsed['items'].inject([]) do |activities, activity|
+        activity = Activity.new activity
+        if !options[:start].nil?
+          if activity.start_time >= start && activity.start_time <= finish
+            activities << activity unless activities.size >= limit
+          end
+        else
+          activities << activity unless activities.size >= limit
+        end
+        activities
+      end
     end
 
     def profile token

@@ -11,7 +11,8 @@ module RunKeeper
     end
 
     def birthday= value
-      @birthday = Time.zone.parse value
+      datetime  = DateTime.parse value
+      @birthday = Time.utc datetime.year, datetime.month, datetime.day, datetime.hour, datetime.min, datetime.sec
     end
 
     def username= profile

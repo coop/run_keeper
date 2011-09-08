@@ -16,11 +16,7 @@ class ProfileTest < MiniTest::Unit::TestCase
   end
 
   def test_birthday_is_UTC
-    assert_equal '(GMT+00:00) UTC', Profile.new('birthday' => 'Sat, Jan 1 2011 00:00:00').birthday.time_zone.to_s
-  end
-
-  def test_birthday_is_an_instance_of_time_with_zone
-    assert_instance_of ActiveSupport::TimeWithZone, Profile.new('birthday' => 'Sat, Jan 1 2011 00:00:00').birthday
+    assert Profile.new('birthday' => 'Sat, Jan 1 2011 00:00:00').birthday.utc?
   end
 
   def test_birthday_is_nil_if_not_provided

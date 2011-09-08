@@ -18,6 +18,24 @@ class BaseTest < MiniTest::Unit::TestCase
     end
   end
 
+  def test_fitness_activities_with_limit_option
+    stub_successful_runkeeper_fitness_activities_request
+    assert_equal 1, runkeeper.fitness_activities('valid_token', :limit => 1).size
+  end
+
+  def test_fitness_activities_with_start_and_finish_options
+    stub_successful_runkeeper_fitness_activities_request
+    activities = runkeeper.fitness_activities('valid_token', :start => '2011-09-01', :finish => '2011-09-04')
+    refute activities.any? { |activity| activity.start_time.to_s < '2011-09-01' || activity.start_time.to_s > '2011-09-04' }
+    assert_equal 2, activities.size
+  end
+
+  def test_fitness_activities_with_limit_and_date_range_options
+    stub_successful_runkeeper_fitness_activities_request
+    activities = runkeeper.fitness_activities('valid_token', :start => '2011-09-01', :finish => '2011-09-04', :limit => 1)
+    assert_equal 1, activities.size
+  end
+
   def test_user_returns_an_instance_of_user
     stub_successful_runkeeper_user_request
     assert_instance_of RunKeeper::User, runkeeper.user('valid_token')

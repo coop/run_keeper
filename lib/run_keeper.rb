@@ -1,4 +1,4 @@
-require 'active_support/time'
+require "date"
 require "oauth2"
 require "run_keeper/activity"
 require "run_keeper/base"

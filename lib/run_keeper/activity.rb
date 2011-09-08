@@ -14,7 +14,8 @@ module RunKeeper
     end
 
     def start_time= value
-      @start_time = Time.zone.parse value
+      datetime    = DateTime.parse value
+      @start_time = Time.utc datetime.year, datetime.month, datetime.day, datetime.hour, datetime.min, datetime.sec
     end
   end
 end
