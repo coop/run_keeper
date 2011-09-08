@@ -14,9 +14,7 @@ module RunKeeper
       start, finish = options[:start], options[:finish].presence || Time.zone.now if options[:start].present?
       limit         = options[:limit].presence || 25
 
-      request(token, 'fitness_activities').parsed['items'].inject([]) do |activities, activity|
-        activities << Activity.new(activity)
-      end
+      request(token, 'fitness_activities').parsed['items'].map { |activity| Activity.new(activity) }
     end
 
     def profile token
