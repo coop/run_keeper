@@ -7,8 +7,6 @@ require "run_keeper/user"
 require "run_keeper/version"
 
 module RunKeeper
-  Time.zone = 'UTC'
-
   def self.new client_id, client_secret
     Base.new client_id, client_secret
   end
