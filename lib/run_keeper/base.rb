@@ -12,9 +12,8 @@ module RunKeeper
 
     def fitness_activities token, options = {}
       options[:params] = {}
-      options[:limit]  = options[:limit] || nil
       options[:start]  = options[:start] ? Time.utc(*options[:start].split('-')) : nil
-      options[:finish] = options[:finish] ? Time.utc(*options[:finish].split('-')) : Time.now.utc
+      options[:finish] = options[:finish] ? Time.utc(*options[:finish].split('-'), 23, 59, 59) : Time.now.utc
 
       get_activities token, options
     end
@@ -44,7 +43,11 @@ module RunKeeper
       response   = request(token, 'fitness_activities', options[:params])
       activities = response.parsed['items'].map { |activity| Activity.new(activity) }
       
-      
+      if options[:start]
+        if rejected = activities.reject { |activity| (activity.start_time > options[:start]) && (activity.start_time < options[:finish]) }
+          activities -= rejected
+        end
+      end
 
       if response.parsed['next']
         options[:params].update(:page => response.parsed['next'].split('=').last)
@@ -52,32 +55,6 @@ module RunKeeper
       else
         activities
       end
-
-      # if options[:start]
-      #   if activities.any? { |activity| activity.start_time < options[:start] }
-      #     actvities.inject([]) do |activities, activity|
-      #       if activity.start_time >= options[:start] && activity.start_time <= options[:finish]
-      #         activities << activity
-      #       end
-      #     end
-      #   else
-      #     options[:params][:page] = response.parsed['next'].split('=').last
-      #     activities << get_activities(token, options)
-      #   end
-      # end
-      
-      # if options[:limit]
-      #   if activities.size == options[:limit]
-      #     activities
-      #   else
-      #     if activities.size > options[:limit]
-      #       activities = activities[0..[options[:limit] - 1]]
-      #     else
-      #       options[:params][:page] = response.parsed['next'].split('=').last
-      #       activities << get_activities(token, options)
-      #     end
-      #   end
-      # end
     end
 
     def parse_response response
