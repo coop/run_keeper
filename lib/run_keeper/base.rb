@@ -15,7 +15,8 @@ module RunKeeper
       options[:start]  = options[:start] ? Time.utc(*options[:start].split('-')) : nil
       options[:finish] = options[:finish] ? Time.utc(*options[:finish].split('-'), 23, 59, 59) : Time.now.utc
 
-      get_activities token, options
+      activities = get_activities token, options
+      options[:limit] ? activities[0..options[:limit] - 1] : activities
     end
 
     def profile token
@@ -42,14 +43,23 @@ module RunKeeper
     def get_activities token, options, activities = nil
       response   = request(token, 'fitness_activities', options[:params])
       activities = response.parsed['items'].map { |activity| Activity.new(activity) }
-      
+
       if options[:start]
         activities -= activities.reject { |activity| (activity.start_time > options[:start]) && (activity.start_time < options[:finish]) }
       end
 
       if response.parsed['next']
-        options[:params].update(:page => response.parsed['next'].split('=').last)
-        activities + get_activities(token, options, activities)
+        if options[:limit]
+          if activities.size < options[:limit]
+            options[:params].update(:page => response.parsed['next'].split('=').last)
+            activities + get_activities(token, options, activities)
+          else
+            activities
+          end
+        else
+          options[:params].update(:page => response.parsed['next'].split('=').last)
+          activities + get_activities(token, options, activities)
+        end
       else
         activities
       end
