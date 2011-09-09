@@ -12,11 +12,9 @@ module RunKeeper
 
     def fitness_activities token, options = {}
       options[:params] = {}
-      options[:limit]  = options[:limit] || 25
-      if !options[:start].nil?
-        options[:start]  = Time.utc *options[:start].split('-')
-        options[:finish] = options[:finish].nil?? Time.now.utc : Time.utc(*options[:finish].split('-'))
-      end
+      options[:limit]  = options[:limit] || nil
+      options[:start]  = options[:start] ? Time.utc(*options[:start].split('-')) : nil
+      options[:finish] = options[:finish] ? Time.utc(*options[:finish].split('-')) : Time.now.utc
 
       get_activities token, options
     end
@@ -42,30 +40,44 @@ module RunKeeper
       OAuth2::AccessToken.new client, token
     end
 
-    def get_activities token, options
+    def get_activities token, options, activities = nil
       response   = request(token, 'fitness_activities', options[:params])
-      activities = response.parsed['items'].inject([]) do |activities, activity|
-        activity = Activity.new activity
-        if !options[:start].nil?
-          if activity.start_time >= options[:start] && activity.start_time <= options[:finish]
-            activities << activity unless activities.size >= options[:limit]
-          end
-        else
-          activities << activity unless activities.size >= options[:limit]
-        end
+      activities = response.parsed['items'].map { |activity| Activity.new(activity) }
+      
+      
+
+      if response.parsed['next']
+        options[:params].update(:page => response.parsed['next'].split('=').last)
+        activities + get_activities(token, options, activities)
+      else
         activities
       end
 
-      if options[:limit] == activities.size
-        activities
-      else
-        if !options[:start].nil?
-          activities
-        else
-          options[:params][:page] = response.parsed['next'].split('=').last
-          activities << get_activities(token, options)
-        end
-      end
+      # if options[:start]
+      #   if activities.any? { |activity| activity.start_time < options[:start] }
+      #     actvities.inject([]) do |activities, activity|
+      #       if activity.start_time >= options[:start] && activity.start_time <= options[:finish]
+      #         activities << activity
+      #       end
+      #     end
+      #   else
+      #     options[:params][:page] = response.parsed['next'].split('=').last
+      #     activities << get_activities(token, options)
+      #   end
+      # end
+      
+      # if options[:limit]
+      #   if activities.size == options[:limit]
+      #     activities
+      #   else
+      #     if activities.size > options[:limit]
+      #       activities = activities[0..[options[:limit] - 1]]
+      #     else
+      #       options[:params][:page] = response.parsed['next'].split('=').last
+      #       activities << get_activities(token, options)
+      #     end
+      #   end
+      # end
     end
 
     def parse_response response
