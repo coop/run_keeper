@@ -44,9 +44,7 @@ module RunKeeper
       activities = response.parsed['items'].map { |activity| Activity.new(activity) }
       
       if options[:start]
-        if rejected = activities.reject { |activity| (activity.start_time > options[:start]) && (activity.start_time < options[:finish]) }
-          activities -= rejected
-        end
+        activities -= activities.reject { |activity| (activity.start_time > options[:start]) && (activity.start_time < options[:finish]) }
       end
 
       if response.parsed['next']
