@@ -1,6 +1,7 @@
 require "date"
 require "oauth2"
 require "run_keeper/activity"
+require "run_keeper/activity_request"
 require "run_keeper/base"
 require "run_keeper/profile"
 require "run_keeper/user"

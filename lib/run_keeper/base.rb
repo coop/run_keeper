@@ -11,12 +11,7 @@ module RunKeeper
     end
 
     def fitness_activities options = {}
-      options[:params] = {}
-      options[:start]  = options[:start] ? Time.utc(*options[:start].split('-')) : nil
-      options[:finish] = options[:finish] ? Time.utc(*options[:finish].split('-'), 23, 59, 59) : Time.now.utc
-
-      activities = get_activities options
-      options[:limit] ? activities[0..options[:limit] - 1] : activities
+      ActivityRequest.new(self, options).get_activities
     end
 
     def profile
@@ -38,31 +33,6 @@ module RunKeeper
     def access_token
       client = OAuth2::Client.new @client_id, @client_secret, :site => 'https://api.runkeeper.com', :authorize_url => '/apps/authorize', :token_url => '/apps/token', :raise_errors => false
       OAuth2::AccessToken.new client, @token
-    end
-
-    def get_activities options, activities = nil
-      response   = request('fitness_activities', options[:params])
-      activities = response.parsed['items'].map { |activity| Activity.new(activity) }
-
-      if options[:start]
-        activities -= activities.reject { |activity| (activity.start_time > options[:start]) && (activity.start_time < options[:finish]) }
-      end
-
-      if response.parsed['next']
-        if options[:limit]
-          if activities.size < options[:limit]
-            options[:params].update(:page => response.parsed['next'].split('=').last)
-            activities + get_activities(options, activities)
-          else
-            activities
-          end
-        else
-          options[:params].update(:page => response.parsed['next'].split('=').last)
-          activities + get_activities(options, activities)
-        end
-      else
-        activities
-      end
     end
 
     def parse_response response
