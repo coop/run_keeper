@@ -1,13 +1,7 @@
 module RunKeeper
-  class Activity
+  class Activity < Base
     attr_accessor :type, :total_distance, :duration, :uri
     attr_reader :start_time
-
-    def initialize attributes = {}
-      attributes.each do |attribute, value|
-        send :"#{attribute}=", value if respond_to? :"#{attribute}="
-      end
-    end
 
     def id
       uri.split('/').last.to_i if uri

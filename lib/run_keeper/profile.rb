@@ -1,12 +1,10 @@
 module RunKeeper
-  class Profile
+  class Profile < Base
     attr_accessor :name, :location, :athlete_type, :goal, :gender, :birthday, :elite, :profile, :small_picture, :normal_picture, :medium_picture, :large_picture, :userid
     attr_reader :username
 
     def initialize attributes = {}
-      attributes.each do |attribute, value|
-        send :"#{attribute}=", value if respond_to? :"#{attribute}="
-      end
+      super attributes
       self.username = profile
     end
 

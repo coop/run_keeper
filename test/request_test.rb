@@ -92,6 +92,6 @@ private
   end
 
   def runkeeper
-    Base.new 'client_id', 'client_secret', 'valid_token'
+    Request.new 'client_id', 'client_secret', 'valid_token'
   end
 end

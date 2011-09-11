@@ -1,10 +1,6 @@
 require 'helper'
 
 class ProfileTest < MiniTest::Unit::TestCase
-  def test_initailization_ignores_unknown_attributes
-    refute_includes Profile.new('foo' => 'bar').instance_variables, :@foo
-  end
-
   def test_initailization_sets_username_if_profile
     profile = Profile.new('profile' => 'http://www.runkeeper.com/user/JohnDoe')
     assert_includes profile.instance_variables, :@username

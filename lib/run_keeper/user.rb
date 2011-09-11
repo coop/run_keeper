@@ -1,12 +1,10 @@
 module RunKeeper
-  class User
+  class User < Base
     attr_accessor :profile, :settings, :fitness_activities, :background_activities, :sleep, :nutrition, :weight, :general_measurements, :diabetes, :records, :team, :strength_training_activities
     attr_reader :userid
 
     def initialize attributes = {}
-      attributes.each do |attribute, value|
-        send :"#{attribute}=", value if respond_to? :"#{attribute}="
-      end
+      super attributes
       self.userid = attributes['userID'] if attributes['userID']
     end
 
