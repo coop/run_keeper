@@ -1,6 +1,6 @@
 require 'helper'
 
-class BaseTest < MiniTest::Unit::TestCase
+class RequestTest < MiniTest::Unit::TestCase
   def test_initialization_sets_client_id_and_client_secret
     assert_includes runkeeper.instance_variables, :@client_id
     assert_includes runkeeper.instance_variables, :@client_secret

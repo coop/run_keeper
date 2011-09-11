@@ -1,5 +1,5 @@
 module RunKeeper
-  class Base
+  class Request
     HEADERS = {
       'fitness_activities' => 'application/vnd.com.runkeeper.FitnessActivityFeed+json',
       'profile'            => 'application/vnd.com.runkeeper.Profile+json',
