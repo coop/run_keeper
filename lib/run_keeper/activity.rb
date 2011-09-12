@@ -1,10 +1,11 @@
 module RunKeeper
   class Activity < Base
-    attr_accessor :type, :total_distance, :duration, :uri
+    attr_accessor :type, :total_distance, :duration, :uri, :id
     attr_reader :start_time
 
-    def id
-      uri.split('/').last.to_i if uri
+    def initialize attributes = {}
+      super
+      self.id = uri.split('/').last.to_i if uri
     end
 
     def start_time= value

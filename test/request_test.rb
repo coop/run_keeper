@@ -24,31 +24,26 @@ class RequestTest < MiniTest::Unit::TestCase
 
   def test_fitness_activities_without_arguments
     stub_successful_runkeeper_fitness_activities_request
-    stub_successful_runkeeper_fitness_activities_page_2_request
     assert_equal 6, runkeeper.fitness_activities.size
   end
 
   def test_fitness_activities_by_start_date_range
     stub_successful_runkeeper_fitness_activities_request
-    stub_successful_runkeeper_fitness_activities_page_2_request
     assert_equal 5, runkeeper.fitness_activities(:start => '2011-08-22').size
   end
 
   def test_fitness_activities_by_date_range
     stub_successful_runkeeper_fitness_activities_request
-    stub_successful_runkeeper_fitness_activities_page_2_request
     assert_equal 4, runkeeper.fitness_activities(:start => '2011-08-22', :finish => '2011-09-02').size
   end
 
   def test_fitness_activities_by_date_range_and_limit
     stub_successful_runkeeper_fitness_activities_request
-    stub_successful_runkeeper_fitness_activities_page_2_request
     assert_equal 2, runkeeper.fitness_activities(:start => '2011-08-22', :finish => '2011-09-02', :limit => 2).size
   end
 
   def test_fitness_activities_by_date_range_and_limit_where_limit_is_greater_than_returned_results
     stub_successful_runkeeper_fitness_activities_request
-    stub_successful_runkeeper_fitness_activities_page_2_request
     assert_equal 6, runkeeper.fitness_activities(:start => '2011-08-01', :limit => 7).size
   end
 
