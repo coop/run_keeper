@@ -27,12 +27,14 @@ runkeeper.profile
 ### Fitness Activities
 
 Fitness Activities (http://developer.runkeeper.com/healthgraph/fitness-activities) are a list of past activities completed by a user. Calling `fitness_activities` without any options will get all activities since the user signed up to RunKeeper.
+
 ``` ruby
 runkeeper.fitness_activities
 # => [RunKeeper::Activity, ...]
 ```
 
 Fitness Activities takes a series of arguments in the form of an options hash. Supported arguments: `start`, `finish` and `limit`:
+
 ``` ruby
 # Get all activities starting from the 1st Jan, 2011
 runkeeper.fitness_activities(:start => '2011-01-01')
@@ -51,6 +53,7 @@ RunKeeper doesn't store users time zones, they rely on the device sending the in
 ## Using RunKeeper mock requests in your App
 
 While developing RunKeeper a few mocked responses were used and have been made available for your test suite.
+
 ``` ruby
 # helper.rb
 require 'run_keeper/mock_requests'
