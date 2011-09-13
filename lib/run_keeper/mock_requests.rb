@@ -50,7 +50,7 @@ private
 
   def stub_runkeeper_token_request
     stub_request(:post, "https://runkeeper.com/apps/token").
-      with :body => {"grant_type" => "authorization_code", "code" => /\w+/, "client_id" => /\w+/, "client_secret" => /\w+/, "redirect_uri" => "#{CONFIG['app_url']}/authorize/callback"},
+      with :body => {"grant_type" => "authorization_code", "code" => /\w+/, "client_id" => /\w+/, "client_secret" => /\w+/, "redirect_uri" => /\w+/},
            :headers => {'Accept' => '*/*', 'Content-Type' => 'application/x-www-form-urlencoded', 'User-Agent' => 'Ruby'}
   end
 

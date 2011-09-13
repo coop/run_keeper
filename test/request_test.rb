@@ -7,6 +7,22 @@ class RequestTest < MiniTest::Unit::TestCase
     assert_includes runkeeper.instance_variables, :@token
   end
 
+  def test_authorize_url_creates_a_valid_runkeeper_authorize_url
+    assert_equal 'https://runkeeper.com/apps/authorize?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Fgoogle.com', runkeeper(nil).authorize_url('http://google.com')
+  end
+
+  def test_get_token_returns_a_token
+    stub_successful_runkeeper_token_request
+    assert_equal 'my_token', runkeeper(nil).get_token('code', 'http://google.com')
+  end
+
+  def test_get_token_raises_an_error_when_it_fails
+    stub_unsuccessful_runkeeper_token_request
+    assert_raises RunKeeper::Error do
+      runkeeper(nil).get_token('code', 'http://google.com')
+    end
+  end
+
   def test_fitness_activities_with_a_valid_token_returns_an_array
     stub_successful_runkeeper_fitness_activities_request
     assert_instance_of Array, runkeeper.fitness_activities(:limit => 1)
@@ -86,7 +102,7 @@ private
     end
   end
 
-  def runkeeper
-    Request.new 'client_id', 'client_secret', 'valid_token'
+  def runkeeper token = 'valid_token'
+    Request.new 'client_id', 'client_secret', token
   end
 end
