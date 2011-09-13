@@ -6,6 +6,8 @@ module RunKeeper
       'user'               => 'application/vnd.com.runkeeper.User+json'
     }
 
+    attr_writer :token
+
     def initialize client_id, client_secret, token
       @client_id, @client_secret, @token = client_id, client_secret, token
     end
