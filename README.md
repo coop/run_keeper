@@ -17,7 +17,7 @@ runkeeper = RunKeeper.new 'client_id', 'client_secret'
 runkeeper.authorize_url 'http://your.com/callback/url'
 # => 'https://runkeeper.com/apps/authorize?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Fyour.com%2Fcallback%2Furl'
 
-runkeeper.token = runkeeper.get_token 'authorization_code_value', 'http://your.com/callback/url'
+runkeeper.get_token 'authorization_code_value', 'http://your.com/callback/url'
 
 # return the users profile
 runkeeper.profile
