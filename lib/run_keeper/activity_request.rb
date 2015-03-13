@@ -15,7 +15,7 @@ module RunKeeper
 
     def request activities = nil
       response   = @runkeeper.request('fitness_activities', @options[:params])
-      activities = response.parsed['items'].map { |activity| Activity.new(activity) }
+      activities = response.parsed['items'] ? response.parsed['items'].map { |activity| Activity.new(activity) } : []
 
       if @options[:start]
         activities -= activities.reject { |activity| (activity.start_time > @options[:start]) && (activity.start_time < @options[:finish]) }
