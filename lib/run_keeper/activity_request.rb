@@ -15,24 +15,16 @@ module RunKeeper
 
     def request activities = nil
       response   = @runkeeper.request('fitness_activities', @options[:params])
-      activities = response.parsed['items'].map { |activity| Activity.new(activity) }
+      activities = response.parsed['items'] ? response.parsed['items'].map { |activity| Activity.new(activity) } : []
 
       if @options[:start]
         activities -= activities.reject { |activity| (activity.start_time > @options[:start]) && (activity.start_time < @options[:finish]) }
       end
 
-      if response.parsed['next']
-        if @options[:limit]
-          if activities.size < @options[:limit]
-            @options[:params].update(:page => response.parsed['next'].split('=').last)
-            activities + request(activities)
-          else
-            activities
-          end
-        else
-          @options[:params].update(:page => response.parsed['next'].split('=').last)
-          activities + request(activities)
-        end
+      if response.parsed['next'] && (@options[:limit].nil? || activities.size < @options[:limit])
+        next_page = response.parsed['next'].scan(/page=(\d+)/)[0][0]
+        @options[:params].update(:page => next_page)
+        activities + request(activities)
       else
         activities
       end
