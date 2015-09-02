@@ -21,7 +21,7 @@ module RunKeeper
     end
 
     def get_token code, redirect_uri
-      client('https://runkeeper.com').auth_code.get_token(code, :redirect_uri => redirect_uri).token
+      @token = client('https://runkeeper.com').auth_code.get_token(code, :redirect_uri => redirect_uri).token
     rescue OAuth2::Error => e
       raise Error.new(e.response)
     end
